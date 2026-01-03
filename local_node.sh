@@ -33,6 +33,9 @@ command -v jq >/dev/null 2>&1 || {
 # used to exit on first error (any non-zero exit code)
 set -e
 
+# Ensure bytechaind is in PATH
+export PATH=$PATH:$(go env GOPATH)/bin:$HOME/go/bin
+
 # Parse input flags
 install=true
 overwrite=""
@@ -176,6 +179,33 @@ if [[ $overwrite == "y" || $overwrite == "Y" ]]; then
 		grep -q -F '[memiavl]' "$APP_TOML" && sed -i '/\[memiavl\]/,/^\[/ s/enable = true/enable = false/' "$APP_TOML"
 		# Don't enable versionDB by default
 		grep -q -F '[versiondb]' "$APP_TOML" && sed -i '/\[versiondb\]/,/^\[/ s/enable = true/enable = false/' "$APP_TOML"
+	fi
+	
+	# ------------------------------------------------------------------
+	# CRITICAL: Fix Listen Addresses (127.0.0.1 -> 0.0.0.0)
+	# ------------------------------------------------------------------
+	# config.toml (RPC, P2P)
+	if [ -f "$CONFIG" ]; then
+		# RPC laddr (tcp://127.0.0.1:26657 -> tcp://0.0.0.0:26657)
+		sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/laddr = "tcp:\/\/0.0.0.0:26657"/g' "$CONFIG"
+		# P2P laddr (usually already 0.0.0.0:26656, but ensuring)
+		sed -i 's/laddr = "tcp:\/\/127.0.0.1:26656"/laddr = "tcp:\/\/0.0.0.0:26656"/g' "$CONFIG"
+		
+		# CORS (allow all)
+		sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = ["*"]/g' "$CONFIG"
+	fi
+
+	# app.toml (API, gRPC, JSON-RPC/EVM)
+	if [ -f "$APP_TOML" ]; then
+		# API (1317)
+		sed -i 's/address = "tcp:\/\/127.0.0.1:1317"/address = "tcp:\/\/0.0.0.0:1317"/g' "$APP_TOML"
+		
+		# gRPC (9090 -> 9092)
+		sed -i 's/address = "127.0.0.1:9090"/address = "0.0.0.0:9092"/g' "$APP_TOML"
+		
+		# JSON-RPC (8545)
+		sed -i 's/address = "127.0.0.1:8545"/address = "0.0.0.0:8545"/g' "$APP_TOML"
+		sed -i 's/ws-address = "127.0.0.1:8546"/ws-address = "0.0.0.0:8546"/g' "$APP_TOML"
 	fi
 
 	# Change proposal periods to pass within a reasonable time for local testing

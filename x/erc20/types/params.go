@@ -24,7 +24,7 @@ const (
 // address in hex format from the chain ID.
 var chainsWEVMOSHex = map[string]string{
 	utils.MainnetChainID: WEVMOSContractMainnet,
-	utils.TestnetChainID: WEVMOSContractTestnet,
+	// utils.TestnetChainID: WEVMOSContractTestnet,
 }
 
 // GetWEVMOSContractHex returns the hex format of address for the WEVMOS contract given the

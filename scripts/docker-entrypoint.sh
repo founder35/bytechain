@@ -78,8 +78,8 @@ if [ "$1" = "start" ]; then
         sed -i 's/enable = false/enable = true/g' "$HOME_DIR/config/app.toml" # enable API if disabled
         sed -i 's/swagger = false/swagger = true/g' "$HOME_DIR/config/app.toml"
 
-        # gRPC (9090)
-        sed -i 's/address = "127.0.0.1:9090"/address = "0.0.0.0:9090"/g' "$HOME_DIR/config/app.toml"
+        # gRPC (9090 -> 9092)
+        sed -i 's/address = "127.0.0.1:9090"/address = "0.0.0.0:9092"/g' "$HOME_DIR/config/app.toml"
         
         # JSON-RPC (8545)
         sed -i 's/address = "127.0.0.1:8545"/address = "0.0.0.0:8545"/g' "$HOME_DIR/config/app.toml"

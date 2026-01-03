@@ -60,7 +60,7 @@ import (
 	evmoskr "github.com/evmos/evmos/v20/crypto/keyring"
 )
 
-const EnvPrefix = "EVMOS"
+const EnvPrefix = "BYTECHAIN"
 
 type emptyAppOptions struct{}
 
@@ -101,8 +101,8 @@ func NewRootCmd() (*cobra.Command, sdktestutil.TestEncodingConfig) {
 		WithLedgerHasProtobuf(true)
 
 	rootCmd := &cobra.Command{
-		Use:   app.Name,
-		Short: "Evmos Daemon",
+		Use:   "bytechaind",
+		Short: "Bytechain Daemon",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -424,7 +424,7 @@ func initTendermintConfig() *cmtcfg.Config {
 }
 
 func tempDir(defaultHome string) string {
-	dir, err := os.MkdirTemp("", "evmos")
+	dir, err := os.MkdirTemp("", "bytechain")
 	if err != nil {
 		dir = defaultHome
 	}

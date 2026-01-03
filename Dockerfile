@@ -40,7 +40,7 @@ FROM alpine:3.21
 
 WORKDIR /root
 
-COPY --from=build-env /go/src/github.com/evmos/evmos/build/evmosd /usr/bin/evmosd
+COPY --from=build-env /go/src/github.com/evmos/evmos/build/bytechaind /usr/bin/bytechaind
 COPY --from=build-env /go/bin/toml-cli /usr/bin/toml-cli
 
 # required for rocksdb build
@@ -56,13 +56,13 @@ RUN apk add --no-cache \
     vim \
     lz4 \
     rclone \
-    && addgroup -g 1000 evmos \
-    && adduser -S -h /home/evmos -D evmos -u 1000 -G evmos
+    && addgroup -g 1000 bytechain \
+    && adduser -S -h /home/bytechain -D bytechain -u 1000 -G bytechain
 
 USER 1000
-WORKDIR /home/evmos
+WORKDIR /home/bytechain
 
 EXPOSE 26656 26657 1317 9090 8545 8546
 HEALTHCHECK CMD curl --fail http://localhost:26657 || exit 1
 
-CMD ["evmosd"]
+CMD ["bytechaind"]

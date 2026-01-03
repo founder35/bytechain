@@ -50,7 +50,7 @@ buildGoApplication rec {
   modules = ./gomod2nix.toml;
   doCheck = false;
   pwd = src; # needed to support replace
-  subPackages = [ "cmd/evmosd" ];
+  subPackages = [ "cmd/bytechaind" ];
   CGO_ENABLED = "1";
 
   postFixup = if dbBackend == "rocksdb" then

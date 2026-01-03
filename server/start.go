@@ -52,7 +52,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/rosetta"
 
-	"github.com/evmos/evmos/v20/cmd/evmosd/opendb"
+	"github.com/evmos/evmos/v20/cmd/bytechaind/opendb"
 	"github.com/evmos/evmos/v20/indexer"
 	ethdebug "github.com/evmos/evmos/v20/rpc/namespaces/ethereum/debug"
 	"github.com/evmos/evmos/v20/server/config"

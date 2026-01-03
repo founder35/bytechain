@@ -168,7 +168,7 @@ import (
 
 func init() {
 	var err error
-	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".evmosd")
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory(".bytechaind")
 	if err != nil {
 		panic(err)
 	}
@@ -183,7 +183,7 @@ func init() {
 }
 
 // Name defines the application binary name
-const Name = "evmosd"
+const Name = "bytechaind"
 
 var (
 	// DefaultNodeHome default home directories for the application daemon

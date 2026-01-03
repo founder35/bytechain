@@ -9,7 +9,7 @@ BINDIR ?= $(GOPATH)/bin
 EVMOS_BINARY = bytechaind
 EVMOS_DIR = evmos
 BUILDDIR ?= $(CURDIR)/build
-HTTPS_GIT := https://github.com/evmos/evmos.git
+HTTPS_GIT := https://github.com/founder35/bytechain.git
 DOCKER := $(shell which docker)
 DOCKER_BUILDKIT=1
 DOCKER_ARGS=
@@ -21,7 +21,7 @@ endif
 NAMESPACE := bytedex
 PROJECT := bytechain
 DOCKER_IMAGE := $(NAMESPACE)/$(PROJECT)
-COMMIT_HASH := $(shell git rev-parse --short=7 HEAD)
+COMMIT_HASH := $(shell git rev-parse --short=7 HEAD 2>/dev/null || echo "dev")
 DOCKER_TAG := $(COMMIT_HASH)
 # e2e env
 MOUNT_PATH := $(shell pwd)/build/:/root/
@@ -169,22 +169,22 @@ build-docker-goleveldb:
 	$(DOCKER) tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
 	# docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:${COMMIT_HASH}
 	# move the binaries to the ./build directory
-	mkdir -p ./build/.evmosd
-	echo '#!/usr/bin/env bash' > ./build/evmosd
-	echo "IMAGE_NAME=${DOCKER_IMAGE}:${COMMIT_HASH}" >> ./build/evmosd
-	echo 'SCRIPT_PATH=$$(cd $$(dirname $$0) && pwd -P)' >> ./build/evmosd
-	echo 'docker run -it --rm -v $${SCRIPT_PATH}/.evmosd:/home/evmos/.evmosd $$IMAGE_NAME evmosd "$$@"' >> ./build/evmosd
-	chmod +x ./build/evmosd
+	mkdir -p ./build/.bytechaind
+	echo '#!/usr/bin/env bash' > ./build/bytechaind
+	echo "IMAGE_NAME=${DOCKER_IMAGE}:${COMMIT_HASH}" >> ./build/bytechaind
+	echo 'SCRIPT_PATH=$$(cd $$(dirname $$0) && pwd -P)' >> ./build/bytechaind
+	echo 'docker run -it --rm -v $${SCRIPT_PATH}/.bytechaind:/home/bytechain/.bytechaind $$IMAGE_NAME bytechaind "$$@"' >> ./build/bytechaind
+	chmod +x ./build/bytechaind
 
 build-docker-pebbledb:
 	DOCKER_BUILDKIT=1 $(DOCKER) build --build-arg DB_BACKEND=pebbledb -t ${DOCKER_IMAGE}:${DOCKER_TAG}-pebble ${DOCKER_ARGS} .
 	$(DOCKER) tag ${DOCKER_IMAGE}:${DOCKER_TAG}-pebble ${DOCKER_IMAGE}:latest-pebble
-	mkdir -p ./build/.evmosd
-	echo '#!/usr/bin/env bash' > ./build/evmosd
-	echo "IMAGE_NAME=${DOCKER_IMAGE}:${COMMIT_HASH}" >> ./build/evmosd
-	echo 'SCRIPT_PATH=$$(cd $$(dirname $$0) && pwd -P)' >> ./build/evmosd
-	echo 'docker run -it --rm -v $${SCRIPT_PATH}/.evmosd:/home/evmos/.evmosd $$IMAGE_NAME evmosd "$$@"' >> ./build/evmosd
-	chmod +x ./build/evmosd
+	mkdir -p ./build/.bytechaind
+	echo '#!/usr/bin/env bash' > ./build/bytechaind
+	echo "IMAGE_NAME=${DOCKER_IMAGE}:${COMMIT_HASH}" >> ./build/bytechaind
+	echo 'SCRIPT_PATH=$$(cd $$(dirname $$0) && pwd -P)' >> ./build/bytechaind
+	echo 'docker run -it --rm -v $${SCRIPT_PATH}/.bytechaind:/home/bytechain/.bytechaind $$IMAGE_NAME bytechaind "$$@"' >> ./build/bytechaind
+	chmod +x ./build/bytechaind
 
 build-rocksdb:
 	# Make sure to run this command with root permission

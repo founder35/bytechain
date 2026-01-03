@@ -25,14 +25,14 @@ COPY . .
 RUN mkdir -p /target/usr/lib /target/usr/local/lib /target/usr/include
 
 RUN if [ "$DB_BACKEND" = "rocksdb" ]; then \
-   make build-rocksdb; \
-   cp -r /usr/lib/* /target/usr/lib/ && \
-   cp -r /usr/local/lib/* /target/usr/local/lib/ && \
-   cp -r /usr/include/* /target/usr/include/; \
-else \
+    make build-rocksdb; \
+    cp -r /usr/lib/* /target/usr/lib/ && \
+    cp -r /usr/local/lib/* /target/usr/local/lib/ && \
+    cp -r /usr/include/* /target/usr/include/; \
+    else \
     # Build default binary with corresponding db backend
     COSMOS_BUILD_OPTIONS=$DB_BACKEND make build; \
-fi
+    fi
 
 RUN go install github.com/MinseokOh/toml-cli@latest
 
@@ -56,13 +56,19 @@ RUN apk add --no-cache \
     vim \
     lz4 \
     rclone \
+    gcompat \
+    libstdc++ \
     && addgroup -g 1000 bytechain \
     && adduser -S -h /home/bytechain -D bytechain -u 1000 -G bytechain
+
+COPY scripts/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER 1000
 WORKDIR /home/bytechain
 
 EXPOSE 26656 26657 1317 9090 8545 8546
-HEALTHCHECK CMD curl --fail http://localhost:26657 || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 CMD curl --fail http://localhost:26657/status || exit 1
 
-CMD ["bytechaind"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD []

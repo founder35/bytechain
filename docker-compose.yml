@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  bytechain-node:
+    image: bytedex/bytechain:latest
+    container_name: bytechain-node
+    restart: unless-stopped
+    ports:
+      - "26656:26656" # P2P
+      - "26657:26657" # RPC
+      - "1317:1317"   # API
+      - "9092:9092"   # gRPC
+      - "8545:8545"   # JSON-RPC
+      - "8546:8546"   # WebSocket
+    volumes:
+      - ./data:/home/bytechain/.bytechaind
+    command: start --chain-id bytechain_9000-1

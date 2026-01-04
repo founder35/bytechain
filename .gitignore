@@ -85,3 +85,7 @@ dependency-graph.png
 contracts/@openzeppelin/*
 
 dist/
+
+# Local node data
+data/
+bytechain/
